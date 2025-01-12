@@ -3,6 +3,7 @@ import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
 import { useEffect, useState } from "react";
 import ControllerConnector from "@cartridge/connector/controller";
 import { Button } from "@/components/ui/button";
+import ConnectWallet from "@/components/ConnectWallet";
 
 export default function Home() {
   const { connect, connectors } = useConnect();
@@ -27,9 +28,7 @@ export default function Home() {
       {address ? (
         <Button onClick={() => disconnect()}>Disconnect</Button>
       ) : (
-        <Button onClick={() => connect({ connector: controller })}>
-          Connect
-        </Button>
+        <ConnectWallet />
       )}
     </div>
   );

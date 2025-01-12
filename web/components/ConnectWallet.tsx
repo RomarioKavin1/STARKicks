@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ControllerConnector from "@cartridge/connector/controller";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
 export function ConnectWallet() {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
