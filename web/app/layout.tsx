@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${pixelFont.variable}`}>
-      <body className="antialiased">
+      <body className="antialiased bg-slate-500">
         <StarknetProvider>{children}</StarknetProvider>
       </body>
     </html>

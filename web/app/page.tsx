@@ -63,7 +63,7 @@ export default function Home() {
               {/* CTA */}
               {!address && (
                 <div className="cta-section">
-                  <p className="insert-coin">INSERT COIN</p>
+                  <p className="insert-coin">CONNECT WALLET TO GET STARTED</p>
                 </div>
               )}
             </div>
