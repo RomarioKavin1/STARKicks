@@ -6,12 +6,224 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer components {
+  .pixel-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600;
   }
 }
 
+@layer utilities {
+  .pixel-art-bg {
+    @apply bg-gray-950;
+    background-image: linear-gradient(
+        rgba(26, 26, 26, 0.3) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(26, 26, 26, 0.3) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  /* Arcade Cabinet */
+  .arcade-cabinet {
+    @apply relative w-full max-w-3xl bg-gray-900 rounded-t-3xl p-6 pb-12;
+    box-shadow: 0 0 0 4px theme("colors.gray.800"),
+      0 0 0 8px theme("colors.yellow.500"), 0 0 40px rgba(0, 0, 0, 0.5);
+    height: 90vh;
+    max-height: 900px;
+  }
+
+  .arcade-screen {
+    @apply w-full bg-gray-950 rounded-lg overflow-hidden relative;
+    height: calc(100% - 80px);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5),
+      0 0 0 4px theme("colors.gray.800");
+  }
+
+  /* Game Content */
+  .game-content {
+    @apply h-full flex flex-col items-center p-8 space-y-8;
+  }
+
+  .game-header {
+    @apply text-center space-y-2;
+  }
+
+  .game-title {
+    @apply text-5xl font-pixel;
+    animation: flicker 4s infinite;
+  }
+
+  .game-subtitle {
+    @apply font-pixel text-gray-400 text-sm;
+  }
+
+  /* Wallet Section */
+  .wallet-section {
+    @apply w-full max-w-md;
+  }
+
+  /* Features Section */
+  .features-section {
+    @apply grid grid-cols-3 gap-4 w-full max-w-2xl;
+  }
+
+  .arcade-card {
+    @apply bg-gray-800/80 p-4 rounded text-center;
+    border: 2px solid theme("colors.gray.700");
+    transition: all 0.2s ease;
+  }
+
+  .arcade-card:hover {
+    @apply bg-gray-800;
+    transform: translateY(-2px);
+    border-color: theme("colors.yellow.500");
+  }
+
+  .card-icon {
+    @apply text-3xl mb-2;
+  }
+
+  .card-title {
+    @apply font-pixel text-sm text-yellow-400 mb-2;
+  }
+
+  .card-description {
+    @apply font-pixel text-xs text-gray-400;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    @apply mt-auto;
+  }
+
+  .insert-coin {
+    @apply font-pixel text-yellow-400 text-xl;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Arcade Controls */
+  .arcade-controls {
+    @apply flex justify-between items-center mt-4 px-12;
+    height: 80px;
+  }
+
+  .controls-left,
+  .controls-right {
+    @apply flex items-center gap-4;
+  }
+
+  .joystick {
+    @apply w-16 h-16 bg-gray-800 rounded-full relative;
+    box-shadow: 0 0 0 4px theme("colors.gray.700"),
+      0 4px 0 theme("colors.gray.600");
+  }
+
+  .joystick::after {
+    content: "";
+    @apply absolute top-1/2 left-1/2 w-4 h-4 bg-gray-600 rounded-full;
+    transform: translate(-50%, -50%);
+  }
+
+  .arcade-button {
+    @apply w-12 h-12 rounded-full relative;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.3), 0 4px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .arcade-button::after {
+    content: "";
+    @apply absolute inset-0 rounded-full;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+  }
+
+  .arcade-button.red {
+    @apply bg-red-500;
+  }
+  .arcade-button.blue {
+    @apply bg-blue-500;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Scanline effect */
+.arcade-screen::before {
+  content: "";
+  @apply absolute inset-0 pointer-events-none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
+
+/* Animations - Place outside layers */
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* CRT and Scanline effects - Place outside layers */
+.arcade-screen::before {
+  content: "";
+  @apply absolute inset-0;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+.arcade-screen::after {
+  content: "";
+  @apply absolute inset-0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

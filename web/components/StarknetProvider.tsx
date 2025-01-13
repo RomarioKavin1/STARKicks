@@ -7,12 +7,8 @@ import {
 } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
 import { SessionPolicies } from "@cartridge/controller";
-
-// Define your contract addresses
 const ETH_TOKEN_ADDRESS =
   "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
-
-// Define session policies
 const policies: SessionPolicies = {
   contracts: {
     [ETH_TOKEN_ADDRESS]: {
@@ -27,11 +23,10 @@ const policies: SessionPolicies = {
     },
   },
 };
-
-// Initialize the connector
 const connector = new ControllerConnector({
   policies,
   rpc: "https://api.cartridge.gg/x/starknet/sepolia",
+  colorMode: "dark",
 });
 
 // Configure RPC provider
