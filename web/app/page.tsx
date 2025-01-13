@@ -3,7 +3,8 @@
 import { useAccount } from "@starknet-react/core";
 import ConnectWallet from "@/components/ConnectWallet";
 import { useEffect, useState } from "react";
-
+import { ArcadeFeatureCard } from "@/components/ArcadeFeatureCard";
+import { Logo } from "@/components/logo";
 export default function Home() {
   const { address } = useAccount();
   const [isLoading, setIsLoading] = useState(true);
@@ -23,9 +24,10 @@ export default function Home() {
           ) : (
             <div className="game-content">
               {/* Title Section */}
-              <div className="game-header">
+              <div className="game-header justify-center items-center flex flex-col">
+                <Logo />
                 <h1 className="game-title pixel-gradient-text mb-2">
-                  StarKicks
+                  STARK<span className=" text-orange-300">icks</span>
                 </h1>
                 <p className="game-subtitle">
                   Build Your Ultimate Football Team on Starknet
@@ -80,23 +82,5 @@ export default function Home() {
         </div>
       </div>
     </main>
-  );
-}
-
-function ArcadeFeatureCard({
-  title,
-  description,
-  icon,
-}: {
-  title: string;
-  description: string;
-  icon: string;
-}) {
-  return (
-    <div className="arcade-card">
-      <div className="card-icon">{icon}</div>
-      <h3 className="card-title">{title}</h3>
-      <p className="card-description">{description}</p>
-    </div>
   );
 }

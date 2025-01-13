@@ -13,6 +13,34 @@ body {
 }
 
 @layer utilities {
+  .logo-container {
+    @apply relative w-32 h-32;
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+
+  .logo-svg {
+    @apply w-full h-full;
+    filter: drop-shadow(0 0 10px rgba(236, 121, 107, 0.2));
+  }
+
+  .logo-main-circle {
+    animation: pulseBorder 3s ease-in-out infinite;
+  }
+
+  .subtle-ring {
+    animation: ringRotate 20s linear infinite;
+  }
+
+  .soccer-ball {
+    transform-origin: 100px 100px;
+    animation: gentleRotate 15s linear infinite;
+    scale: 1.1;
+  }
+
+  .starknet-star {
+    scale: 1.5;
+    animation: starPulse 2s ease-in-out infinite;
+  }
   .pixel-art-bg {
     @apply bg-gray-950;
     background-image: linear-gradient(
@@ -142,7 +170,56 @@ body {
     @apply bg-blue-500;
   }
 }
+@keyframes gentleRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
+@keyframes ringRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseBorder {
+  0%,
+  100% {
+    stroke-width: 4;
+    filter: drop-shadow(0 0 2px rgba(236, 121, 107, 0.3));
+  }
+  50% {
+    stroke-width: 4.5;
+    filter: drop-shadow(0 0 4px rgba(236, 121, 107, 0.4));
+  }
+}
+
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes starPulse {
+  0%,
+  100% {
+    transform: scale(0.5) translate(140px, 40px);
+  }
+  50% {
+    transform: scale(0.55) translate(140px, 40px);
+    filter: brightness(1.2);
+  }
+}
 @keyframes flicker {
   0%,
   92%,
