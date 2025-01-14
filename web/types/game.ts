@@ -1,4 +1,5 @@
-// types/game.ts
+export type Rarity = "common" | "rare" | "epic" | "legendary";
+
 export type Card = {
   id: string;
   name: string;
@@ -6,6 +7,7 @@ export type Card = {
   control: number;
   defense: number;
   position: "attack" | "midfield" | "defense";
+  rarity: Rarity;
   specialAbility?: {
     name: string;
     cost: number;
