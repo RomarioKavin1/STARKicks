@@ -13,54 +13,94 @@ export function PlayerCard({
   isSelected,
   isOpponent,
 }: PlayerCardProps) {
+  const getRarityDisplay = (rarity: string) => {
+    return rarity.charAt(0).toUpperCase() + rarity.slice(1);
+  };
+
+  // Rarity-based border styles
+  const getBorderStyles = (rarity: string) => {
+    switch (rarity) {
+      case "legendary":
+        return "border-4 border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.5)]";
+      case "epic":
+        return "border-4 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]";
+      case "rare":
+        return "border-4 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]";
+      default:
+        return "border-4 border-gray-500";
+    }
+  };
+
   return (
     <div
-      className={`player-card relative transition-all duration-300 hover:z-10
-        ${getRarityClass(card.rarity)}
-        ${isSelected ? "scale-110 z-20" : ""}
-        ${isOpponent ? "opponent-card" : "player-card-hover"}
-      `}
+      className={`relative w-36 h-52 transform transition-all duration-300 hover:scale-105 
+        ${isSelected ? "scale-110 z-20" : "z-10"}
+        ${isOpponent ? "opponent-card" : ""}`}
       onClick={() => onSelect(card)}
     >
-      <div className={`absolute inset-0 card-glow ${card.rarity}`} />
-
-      {/* Card Content */}
-      <div className="relative z-10 p-3 h-full flex flex-col">
-        {/* Player Image */}
-        <div className="player-image-container mb-2">
-          <div className="player-image bg-gray-700 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
-            <span className="text-2xl font-bold">{card.name[0]}</span>
-          </div>
-        </div>
-
-        {/* Card Info */}
-        <div className="text-center">
-          <h3 className="font-pixel text-sm text-white mb-2 truncate">
-            {card.name}
-          </h3>
-
-          <div className="stats grid grid-cols-3 gap-1 text-xs mb-2">
-            <div className="stat">
-              <span className="text-red-400">ATK</span>
-              <span className="block">{card.attack}</span>
-            </div>
-            <div className="stat">
-              <span className="text-blue-400">CTL</span>
-              <span className="block">{card.control}</span>
-            </div>
-            <div className="stat">
-              <span className="text-green-400">DEF</span>
-              <span className="block">{card.defense}</span>
-            </div>
+      {/* Main Card Container */}
+      <div
+        className={`absolute inset-0 rounded-lg ${getBorderStyles(card.rarity)} 
+          bg-gray-800 overflow-hidden`}
+      >
+        {/* Card Content Container */}
+        <div className="relative z-10 h-full p-3 flex flex-col">
+          {/* Rarity Badge */}
+          <div
+            className={`absolute -top-0.5 -right-0.5 px-2 py-0.5 text-[10px] font-pixel rounded-bl-lg rounded-tr-lg ${
+              card.rarity === "legendary"
+                ? "bg-yellow-500 text-black"
+                : card.rarity === "epic"
+                ? "bg-purple-500 text-white"
+                : card.rarity === "rare"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-500 text-white"
+            }`}
+          >
+            {getRarityDisplay(card.rarity)}
           </div>
 
-          {card.specialAbility && !isOpponent && (
-            <div className="special-move mt-1">
-              <span className="text-[10px] font-pixel text-yellow-400 block special-pulse">
-                {card.specialAbility.name}
+          {/* Player Image */}
+          <div className="player-image-container mb-2">
+            <div className="player-image bg-gray-700 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+              <span className="text-2xl font-bold text-white">
+                {card.name[0]}
               </span>
             </div>
-          )}
+          </div>
+
+          {/* Card Info */}
+          <div className="text-center flex-1 flex flex-col">
+            <h3 className="font-pixel text-sm text-white mb-2 truncate">
+              {card.name}
+            </h3>
+
+            <div className="stats grid grid-cols-3 gap-1 text-xs mb-2">
+              <div className="stat bg-red-900/30 rounded p-1">
+                <span className="text-red-400 block">ATK</span>
+                <span className="text-white">{card.attack}</span>
+              </div>
+              <div className="stat bg-blue-900/30 rounded p-1">
+                <span className="text-blue-400 block">CTL</span>
+                <span className="text-white">{card.control}</span>
+              </div>
+              <div className="stat bg-green-900/30 rounded p-1">
+                <span className="text-green-400 block">DEF</span>
+                <span className="text-white">{card.defense}</span>
+              </div>
+            </div>
+
+            {/* Special Ability - Now with proper overflow handling */}
+            {card.specialAbility && !isOpponent && (
+              <div className="mt-auto">
+                <div className="bg-yellow-500/10 p-1 rounded">
+                  <p className="text-[10px] font-pixel text-yellow-400 line-clamp-2 break-words">
+                    {card.specialAbility.name}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

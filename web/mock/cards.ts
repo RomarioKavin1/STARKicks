@@ -66,7 +66,7 @@ export const mockCards: Card[] = [
     defense: 90,
     position: "defense",
     specialAbility: {
-      name: "Wall",
+      name: "Concrete Wall",
       cost: 2,
       effect: "Block next attack",
     },
