@@ -7,12 +7,251 @@ body {
 }
 
 @layer components {
+  .football-field {
+    background: linear-gradient(
+      to right,
+      #1a472a,
+      #2a573a 10%,
+      #2a573a 90%,
+      #1a472a
+    );
+  }
+
+  /* Field Markings */
+  .field-markings {
+    @apply pointer-events-none;
+  }
+
+  .field-markings::before {
+    content: "";
+    @apply absolute inset-0;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.1) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Center Circle */
+  .center-circle {
+    @apply absolute top-1/2 left-1/2 w-32 h-32 border-2 border-white/20 rounded-full;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Center Line */
+  .center-line {
+    @apply absolute top-0 bottom-0 left-1/2 w-0.5 bg-white/20;
+    transform: translateX(-50%);
+  }
+
+  /* Goal Areas */
+  .goal-area {
+    @apply absolute top-1/4 bottom-1/4 w-24;
+  }
+
+  .left-goal {
+    @apply left-0;
+  }
+
+  .right-goal {
+    @apply right-0;
+  }
+
+  .penalty-box {
+    @apply absolute top-0 bottom-0 w-full border-2 border-white/20;
+  }
+
+  .left-goal .penalty-box {
+    @apply border-l-0;
+  }
+
+  .right-goal .penalty-box {
+    @apply border-r-0;
+  }
+
+  /* Goal Posts */
+  .goal-post {
+    @apply absolute top-1/3 bottom-1/3 w-2 bg-white/40;
+  }
+
+  .left-goal .goal-post {
+    @apply left-0;
+  }
+
+  .right-goal .goal-post {
+    @apply right-0;
+  }
+  .formation-grid {
+    @apply w-full px-4;
+  }
+  .space-y-8 > :not([hidden]) ~ :not([hidden]) {
+    @apply mt-8;
+  }
+
+  /* Position the defensive player closer to goal */
+  .col-start-1,
+  .col-start-3 {
+    @apply relative;
+  }
+  .teams-container {
+    @apply py-8;
+    min-height: 600px; /* Adjust based on your needs */
+  }
+  .football-field::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 25px 25px;
+  }
+  .arcade-btn {
+    @apply px-4 py-2 font-pixel text-sm bg-yellow-500 text-black;
+    position: relative;
+    transition: all 0.2s;
+    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.3),
+      0 0 0 2px theme("colors.gray.800");
+  }
+
+  .arcade-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  .arcade-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .arcade-btn.disabled {
+    @apply bg-gray-600 cursor-not-allowed;
+  }
+
+  .field-lines > * {
+    @apply absolute border-2 border-white/20;
+  }
+
+  .center-circle {
+    @apply w-24 h-24 rounded-full;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .halfway-line {
+    @apply w-full h-0;
+    top: 50%;
+  }
+
+  /* Card styles */
+  .player-card {
+    @apply w-32 bg-gray-800/90 rounded-lg overflow-hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .player-card-hover:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  }
+  .player-card:hover .card-glow {
+    opacity: 0.3;
+  }
+
+  /* Rarity backgrounds */
+  .rarity-common {
+    background: linear-gradient(45deg, #2a2a2a, #3a3a3a);
+  }
+
+  .rarity-rare {
+    background: linear-gradient(45deg, #1a365d, #2b4c7e);
+    animation: rarePulse 3s infinite;
+  }
+
+  .rarity-epic {
+    background: linear-gradient(45deg, #553c9a, #7c3aed);
+    animation: epicPulse 3s infinite;
+  }
+
+  .rarity-legendary {
+    background: linear-gradient(45deg, #b45309, #f59e0b);
+    animation: legendaryPulse 3s infinite;
+  }
+  .rarity-legendary .card-glow {
+    background: linear-gradient(45deg, #fbbf24, #d97706);
+  }
+  .rarity-epic .card-glow {
+    background: linear-gradient(45deg, #7c3aed, #4c1d95);
+  }
+
+  .rarity-rare .card-glow {
+    background: linear-gradient(45deg, #2563eb, #1d4ed8);
+  }
+
   .pixel-gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-600;
+  }
+  .pixel-border {
+    @apply border-2 bg-gray-800;
+    position: relative;
+    box-shadow: inset 0 0 0 2px theme("colors.gray.700"),
+      0 0 0 2px theme("colors.gray.800");
+  }
+
+  .pixel-button {
+    @apply px-4 py-2 bg-yellow-500 text-black font-pixel;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .pixel-button:disabled {
+    @apply bg-gray-600 cursor-not-allowed;
+  }
+
+  .pixel-button:hover:not(:disabled) {
+    transform: translateY(-2px);
   }
 }
 
 @layer utilities {
+  /* globals.css - Add to your existing styles */
+  .arcade-card {
+    @apply bg-gray-800 border-2 border-gray-700;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5),
+      0 0 0 2px theme("colors.gray.800");
+  }
+
+  .arcade-card-selected {
+    @apply bg-gray-800 border-2 border-yellow-500;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5),
+      0 0 10px theme("colors.yellow.500");
+  }
+  .card-glow {
+    filter: blur(20px);
+    opacity: 0.15;
+    transition: opacity 0.3s ease;
+  }
+
+  .opponent-card {
+    @apply bg-gray-800 border-2 border-red-900;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5),
+      0 0 0 2px theme("colors.gray.800");
+  }
+
+  /* Add scanline effect */
+  .arcade-screen::after {
+    content: "";
+    @apply absolute inset-0 pointer-events-none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  }
   .logo-container {
     @apply relative w-32 h-32;
     animation: logoFloat 3s ease-in-out infinite;
@@ -36,6 +275,9 @@ body {
     animation: gentleRotate 15s linear infinite;
     scale: 1.1;
   }
+  .special-pulse {
+    animation: specialPulse 2s infinite;
+  }
 
   .starknet-star {
     scale: 1.5;
@@ -53,11 +295,9 @@ body {
 
   /* Arcade Cabinet */
   .arcade-cabinet {
-    @apply relative w-full max-w-3xl bg-gray-900 rounded-t-3xl p-6 pb-12;
+    @apply relative w-[90vw] max-w-7xl h-[90vh] bg-gray-900 rounded-t-3xl p-8;
     box-shadow: 0 0 0 4px theme("colors.gray.800"),
       0 0 0 8px theme("colors.yellow.500"), 0 0 40px rgba(0, 0, 0, 0.5);
-    height: 90vh;
-    max-height: 900px;
   }
 
   .arcade-screen {
@@ -176,6 +416,18 @@ body {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes specialPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
   }
 }
 
