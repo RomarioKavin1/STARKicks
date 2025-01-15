@@ -23,7 +23,7 @@ version = "2.8.4"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.0.10#80ac6d1cdf35a855aeb550463e50546dc24a09cc"
 
 [[package]]
-name = "dojo_starter"
+name = "starkicks"
 version = "1.0.9"
 dependencies = [
  "dojo",
