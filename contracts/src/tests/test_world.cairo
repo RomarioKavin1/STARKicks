@@ -1,94 +1,180 @@
 #[cfg(test)]
 mod tests {
-    use dojo_cairo_test::WorldStorageTestTrait;
-use dojo::model::{ModelStorage, ModelValueStorage, ModelStorageTest};
-    use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef};
+    use dojo::test_utils::spawn_test_world;
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use starknet::testing::set_caller_address;
+    use core::traits::Into;
+    use core::array::ArrayTrait;
 
-    use dojo_starter::systems::actions::{actions, IActionsDispatcher, IActionsDispatcherTrait};
-    use dojo_starter::models::{Position, m_Position, Moves, m_Moves, Direction};
+    use super::super::{
+        models::{Card, Player, Game, Deck}, 
+        systems::{card_system, game_system, deck_system}
+    };
 
-    fn namespace_def() -> NamespaceDef {
-        let ndef = NamespaceDef {
-            namespace: "dojo_starter", resources: [
-                TestResource::Model(m_Position::TEST_CLASS_HASH),
-                TestResource::Model(m_Moves::TEST_CLASS_HASH),
-                TestResource::Event(actions::e_Moved::TEST_CLASS_HASH),
-                TestResource::Contract(actions::TEST_CLASS_HASH)
-            ].span()
-        };
+    const PLAYER1: felt252 = 0x123;
+    const PLAYER2: felt252 = 0x456;
 
-        ndef
-    }
+    #[test]
+    fn test_create_game() {
+        // Spawn test world
+        let world = spawn_test_world();
+        
+        // Set up test account
+        set_caller_address(PLAYER1.into());
 
-    fn contract_defs() -> Span<ContractDef> {
-        [
-            ContractDefTrait::new(@"dojo_starter", @"actions")
-                .with_writer_of([dojo::utils::bytearray_hash(@"dojo_starter")].span())
-        ].span()
+        // Create test cards for both players
+        let player1_cards = create_test_deck(world, PLAYER1.into());
+        let player2_cards = create_test_deck(world, PLAYER2.into());
+
+        // Create decks
+        let deck_system = deck_system::DeckSystemImpl::new(world);
+        deck_system.create_deck(player1_cards);
+        
+        set_caller_address(PLAYER2.into());
+        deck_system.create_deck(player2_cards);
+
+        // Create game
+        set_caller_address(PLAYER1.into());
+        let game_system = game_system::GameSystemImpl::new(world);
+        let game_id = game_system.create_game(PLAYER2.into());
+
+        // Get game state
+        let game = get!(world, game_id, (Game));
+
+        // Assert game created correctly
+        assert(game.player1 == PLAYER1.into(), 'Wrong player1');
+        assert(game.player2 == PLAYER2.into(), 'Wrong player2');
+        assert(game.state == 1, 'Wrong game state'); // 1 = in progress
+        assert(game.current_turn == PLAYER1.into(), 'Wrong turn');
     }
 
     #[test]
-    fn test_world_test_set() {
-        // Initialize test environment
-        let caller = starknet::contract_address_const::<0x0>();
-        let ndef = namespace_def();
+    fn test_make_move() {
+        let world = spawn_test_world();
+        
+        // Set up game with two players
+        let (game_id, player1_cards, player2_cards) = setup_test_game(world);
+        
+        // Make a move
+        set_caller_address(PLAYER1.into());
+        let game_system = game_system::GameSystemImpl::new(world);
+        
+        let attacking_card = player1_cards[0];
+        let target_card = player2_cards[0];
+        
+        game_system.make_move(game_id, attacking_card, target_card);
 
-        // Register the resources.
-        let mut world = spawn_test_world([ndef].span());
+        // Get updated game state
+        let game = get!(world, game_id, (Game));
+        let player = get!(world, (PLAYER1.into()), (Player));
 
-        // Ensures permissions and initializations are synced.
-        world.sync_perms_and_inits(contract_defs());
-
-        // Test initial position
-        let mut position: Position = world.read_model(caller);
-        assert(position.vec.x == 0 && position.vec.y == 0, 'initial position wrong');
-
-        // Test write_model_test
-        position.vec.x = 122;
-        position.vec.y = 88;
-
-        world.write_model_test(@position);
-
-        let mut position: Position = world.read_model(caller);
-        assert(position.vec.y == 88, 'write_value_from_id failed');
-
-        // Test model deletion
-        world.erase_model(@position);
-        let position: Position = world.read_model(caller);
-        assert(position.vec.x == 0 && position.vec.y == 0, 'erase_model failed');
+        // Verify move results
+        assert(player.energy < 2, 'Energy not consumed');
+        assert(game.current_turn == PLAYER1.into(), 'Wrong turn'); // Turn shouldn't change until end_turn
     }
 
     #[test]
-    #[available_gas(30000000)]
-    fn test_move() {
-        let caller = starknet::contract_address_const::<0x0>();
+    fn test_end_turn() {
+        let world = spawn_test_world();
+        
+        // Set up game
+        let (game_id, _, _) = setup_test_game(world);
+        
+        // Make move and end turn
+        set_caller_address(PLAYER1.into());
+        let game_system = game_system::GameSystemImpl::new(world);
+        
+        game_system.end_turn(game_id);
 
-        let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
-        world.sync_perms_and_inits(contract_defs());
+        // Get updated game state
+        let game = get!(world, game_id, (Game));
+        
+        // Verify turn changed
+        assert(game.current_turn == PLAYER2.into(), 'Turn not changed');
+        
+        // Verify new player has full energy
+        let player2 = get!(world, (PLAYER2.into()), (Player));
+        assert(player2.energy == 2, 'Energy not reset');
+    }
 
-        let (contract_address, _) = world.dns(@"actions").unwrap();
-        let actions_system = IActionsDispatcher { contract_address };
+    #[test]
+    #[should_panic(expected: ('Not your turn',))]
+    fn test_wrong_turn() {
+        let world = spawn_test_world();
+        
+        // Set up game
+        let (game_id, player1_cards, player2_cards) = setup_test_game(world);
+        
+        // Try to move with wrong player
+        set_caller_address(PLAYER2.into());
+        let game_system = game_system::GameSystemImpl::new(world);
+        
+        game_system.make_move(game_id, player2_cards[0], player1_cards[0]);
+    }
 
-        actions_system.spawn();
-        let initial_moves: Moves = world.read_model(caller);
-        let initial_position: Position = world.read_model(caller);
+    #[test]
+    #[should_panic(expected: ('Not enough energy',))]
+    fn test_not_enough_energy() {
+        let world = spawn_test_world();
+        
+        // Set up game
+        let (game_id, player1_cards, player2_cards) = setup_test_game(world);
+        
+        set_caller_address(PLAYER1.into());
+        let game_system = game_system::GameSystemImpl::new(world);
+        
+        // Make moves until energy is depleted
+        game_system.make_move(game_id, player1_cards[0], player2_cards[0]);
+        game_system.make_move(game_id, player1_cards[1], player2_cards[0]);
+        
+        // Try to move with no energy
+        game_system.make_move(game_id, player1_cards[2], player2_cards[0]);
+    }
 
-        assert(
-            initial_position.vec.x == 10 && initial_position.vec.y == 10, 'wrong initial position'
-        );
+    // Helper functions
+    fn create_test_deck(world: IWorldDispatcher, owner: ContractAddress) -> Array<u64> {
+        let card_system = card_system::CardSystemImpl::new(world);
+        let mut cards = ArrayTrait::new();
+        
+        // Create 2 attackers
+        let card1 = card_system.mint_card(owner);
+        let card2 = card_system.mint_card(owner);
+        
+        // Create 2 midfielders
+        let card3 = card_system.mint_card(owner);
+        let card4 = card_system.mint_card(owner);
+        
+        // Create 1 defender
+        let card5 = card_system.mint_card(owner);
 
-        actions_system.move(Direction::Right(()).into());
+        cards.append(card1.id);
+        cards.append(card2.id);
+        cards.append(card3.id);
+        cards.append(card4.id);
+        cards.append(card5.id);
 
-        let moves: Moves = world.read_model(caller);
-        let right_dir_felt: felt252 = Direction::Right(()).into();
+        cards
+    }
 
-        assert(moves.remaining == initial_moves.remaining - 1, 'moves is wrong');
-        assert(moves.last_direction.unwrap().into() == right_dir_felt, 'last direction is wrong');
+    fn setup_test_game(world: IWorldDispatcher) -> (u64, Array<u64>, Array<u64>) {
+        // Create cards and decks
+        let player1_cards = create_test_deck(world, PLAYER1.into());
+        let player2_cards = create_test_deck(world, PLAYER2.into());
 
-        let new_position: Position = world.read_model(caller);
-        assert(new_position.vec.x == initial_position.vec.x + 1, 'position x is wrong');
-        assert(new_position.vec.y == initial_position.vec.y, 'position y is wrong');
+        // Set up decks
+        let deck_system = deck_system::DeckSystemImpl::new(world);
+        
+        set_caller_address(PLAYER1.into());
+        deck_system.create_deck(player1_cards);
+        
+        set_caller_address(PLAYER2.into());
+        deck_system.create_deck(player2_cards);
+
+        // Create game
+        set_caller_address(PLAYER1.into());
+        let game_system = game_system::GameSystemImpl::new(world);
+        let game_id = game_system.create_game(PLAYER2.into());
+
+        (game_id, player1_cards, player2_cards)
     }
 }
