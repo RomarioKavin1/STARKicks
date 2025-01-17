@@ -1,6 +1,9 @@
+// src/models/card.cairo
 use starknet::ContractAddress;
+use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+use super::super::types::{CardPosition, CardRarity};
 
-#[derive(Model, Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, starknet::Store)]
 struct Card {
     #[key]
     id: u64,
@@ -10,8 +13,7 @@ struct Card {
     attack: u8,
     control: u8,
     defense: u8,
-    position: u8, // 0: attack, 1: midfield, 2: defense
-    rarity: u8,   // 0: common, 1: rare, 2: epic, 3: legendary
+    rarity: CardRarity,
     special_ability: felt252,
     in_deck: bool,
 }

@@ -8,21 +8,20 @@ trait ICardSystem<TContractState> {
 
 #[dojo::contract]
 mod card_system {
-    use super::ICardSystem;
-    use starknet::{ContractAddress, get_caller_address};
-
+    use starknet::ContractAddress;
+    
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
         CardMinted: CardMinted,
-        CardTransferred: CardTransferred,
     }
 
     #[derive(Drop, starknet::Event)]
     struct CardMinted {
         player: ContractAddress,
-        card_id: u64
+        card_id: u64,
     }
+
 
     #[derive(Drop, starknet::Event)]
     struct CardTransferred {

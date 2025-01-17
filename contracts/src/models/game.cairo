@@ -1,6 +1,8 @@
+// src/models/game.cairo
 use starknet::ContractAddress;
+use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
-#[derive(Model, Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, starknet::Store)]
 struct Game {
     #[key]
     id: u64,
@@ -9,8 +11,18 @@ struct Game {
     current_turn: ContractAddress,
     state: u8, // 0: not started, 1: in progress, 2: finished
     winner: ContractAddress,
-    turn_count: u8,
-    player1_score: u8,
-    player2_score: u8,
-    last_move_timestamp: u64,
+}
+
+#[dojo::contract]
+mod game_component {
+    use super::Game;
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+
+    #[external(v0)]
+    impl GameComponentImpl of super::IGame<ContractState> {
+        fn get_game(self: @ContractState, game_id: u64) -> Game {
+            let world = self.world_dispatcher.read();
+            get!(world, game_id, (Game))
+        }
+    }
 }
