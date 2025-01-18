@@ -13,3 +13,17 @@ pub struct Card {
     pub rarity: u8,
     pub in_deck: bool,
 }
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct Game {
+    #[key]
+    pub game_id: u32,
+    #[key]
+    pub player: ContractAddress,
+    pub current_turn: bool, // true for player, false for AI
+    pub player_energy: u8,
+    pub ai_energy: u8,
+    pub player_score: u8,
+    pub ai_score: u8,
+    pub status: u8, // 0: not started, 1: in progress, 2: ended
+}
