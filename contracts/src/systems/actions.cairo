@@ -5,6 +5,8 @@ trait IActions<T> {
     fn spawn(ref self: T);
     fn create_game(ref self: T,game_id:u32) -> u32;
     fn set_deck(ref self: T, card_ids: Array<u32>) -> Result<(), felt252>;
+    fn play_card(ref self: T, game_id: u32, card_id: u32, is_special: bool) -> Result<(), felt252>;
+    
 }
 
 // dojo decorator
@@ -36,6 +38,16 @@ pub mod actions {
         #[key]
         player: ContractAddress,
         deck_size: u8,
+    }
+    #[derive(Copy, Drop, Serde)]
+    #[dojo::event]
+    pub struct CardPlayed {
+        #[key]
+        player: ContractAddress,
+        game_id: u32,
+        card_id: u32,
+        is_special: bool,
+        energy_cost: u8,
     }
 
     #[abi(embed_v0)]
@@ -134,6 +146,63 @@ pub mod actions {
 
             Result::Ok(())
         }
+        fn play_card(
+            ref self: ContractState, 
+            game_id: u32, 
+            card_id: u32, 
+            is_special: bool
+        ) -> Result<(), felt252> {
+            let mut world = self.world_default();
+            let player = get_caller_address();
+        
+            // Read game state
+            let mut game: Game = world.read_model((game_id, player));
+            assert(game.status == 1, 'Game not in progress');
+            assert(game.current_turn, 'Not player turn');
+        
+            // Calculate energy cost
+            let energy_cost = if is_special { 2 } else { 1 };
+            assert(game.player_energy >= energy_cost, 'Not enough energy');
+        
+            // Verify card ownership and in deck
+            let card: Card = world.read_model((player, card_id));
+            assert(card.player == player, 'Not card owner');
+            assert(card.in_deck, 'Card not in deck');
+        
+            // Verify card in player deck for this game
+            let deck :PlayerDeck = world.read_model((player, card_id));
+            let card_slot:u8 = deck.card_slot;
+            assert(card_slot > 0, 'Card not in active deck');
+        
+            // Update game state
+            let updated_game = Game {
+                game_id: game.game_id,
+                player: game.player,
+                current_turn: game.current_turn,
+                player_energy: game.player_energy - energy_cost,
+                ai_energy: game.ai_energy,
+                player_score: game.player_score,
+                ai_score: game.ai_score,
+                status: game.status,
+            };
+        
+            // Write updated state
+            world.write_model(@updated_game);
+        
+            // Emit event
+            world.emit_event(
+                @CardPlayed { 
+                    player, 
+                    game_id, 
+                    card_id, 
+                    is_special, 
+                    energy_cost 
+                }
+            );
+        
+            Result::Ok(())
+        }
+        
     }
 
     #[generate_trait]
