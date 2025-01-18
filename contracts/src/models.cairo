@@ -27,3 +27,13 @@ pub struct Game {
     pub ai_score: u8,
     pub status: u8, // 0: not started, 1: in progress, 2: ended
 }
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct PlayerDeck {
+    #[key]
+    pub player: ContractAddress,
+    #[key]
+    pub card_slot: u8, // 1 to 5 for each card slot
+    pub card_id: u32,
+}

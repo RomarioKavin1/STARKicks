@@ -1,17 +1,18 @@
-use dojo_starter::models::{Card,Game};
+use dojo_starter::models::{Card,Game,PlayerDeck};
 // define the interface
 #[starknet::interface]
 trait IActions<T> {
     fn spawn(ref self: T);
     fn create_game(ref self: T,game_id:u32) -> u32;
+    fn set_deck(ref self: T, card_ids: Array<u32>) -> Result<(), felt252>;
 }
 
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Card,Game};
+    use super::{IActions, Card,Game,PlayerDeck};
     use starknet::{ContractAddress, get_caller_address};
-    
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use dojo::model::{ModelStorage, ModelValueStorage};
     use dojo::event::EventStorage;
 
@@ -28,6 +29,13 @@ pub mod actions {
         #[key]
         player: ContractAddress,
         game_id: u32,
+    }
+    #[derive(Copy, Drop, Serde)]
+    #[dojo::event]
+    pub struct DeckSet {
+        #[key]
+        player: ContractAddress,
+        deck_size: u8,
     }
 
     #[abi(embed_v0)]
@@ -75,6 +83,56 @@ pub mod actions {
             world.emit_event(@GameCreated{player, game_id});
     
             game_id
+        }
+        fn set_deck(ref self: ContractState, card_ids: Array<u32>) -> Result<(), felt252> {
+            let mut world = self.world_default();
+            let player = get_caller_address();
+
+            // Verify deck size
+            assert(card_ids.len() == 5, 'Deck must contain 5 cards');
+
+            // Verify card ownership and set deck
+            let mut i = 0;
+            loop {
+                if i >= card_ids.len() {
+                    break;
+                }
+
+                // Read card using proper World API
+                let card: Card = world.read_model((player, *card_ids[i]));
+                assert(card.player == player, 'Player must own card');
+                assert(!card.in_deck, 'Card already in deck');
+
+                // Update card to be in deck
+                let updated_card = Card {
+                    player,
+                    id: *card_ids[i],
+                    attack: card.attack,
+                    defense: card.defense,
+                    control: card.control,
+                    position: card.position,
+                    rarity: card.rarity,
+                    in_deck: true,
+                };
+
+                // Create deck entry
+                let deck_entry = PlayerDeck {
+                    player,
+                    card_slot: i.try_into().unwrap(),
+                    card_id: *card_ids[i],
+                };
+
+                // Write updated states using proper World API
+                world.write_model(@updated_card);
+                world.write_model(@deck_entry);
+
+                i += 1;
+            };
+
+            // Emit event using proper World API
+            world.emit_event(@DeckSet { player, deck_size: 5_u8 });
+
+            Result::Ok(())
         }
     }
 
