@@ -6,7 +6,7 @@ trait IActions<T> {
     fn create_game(ref self: T,game_id:u32) -> u32;
     fn set_deck(ref self: T, card_ids: Array<u32>) -> Result<(), felt252>;
     fn play_card(ref self: T, game_id: u32, card_id: u32, is_special: bool) -> Result<(), felt252>;
-    
+    fn end_turn(ref self: T, game_id: u32) -> Result<(), felt252>;
 }
 
 // dojo decorator
@@ -48,6 +48,14 @@ pub mod actions {
         card_id: u32,
         is_special: bool,
         energy_cost: u8,
+    }
+    #[derive(Copy, Drop, Serde)]
+    #[dojo::event]
+    pub struct TurnEnded {
+        #[key]
+        player: ContractAddress,
+        game_id: u32,
+        next_turn: bool, // true for player, false for AI
     }
 
     #[abi(embed_v0)]
@@ -202,7 +210,41 @@ pub mod actions {
         
             Result::Ok(())
         }
+        fn end_turn(ref self: ContractState, game_id: u32) -> Result<(), felt252> {
+            let mut world = self.world_default();
+            let player = get_caller_address();
         
+            // Read current game state
+            let mut game: Game = world.read_model((game_id, player));
+            assert(game.status == 1, 'Game not in progress');
+            assert(game.current_turn, 'Not player turn');
+        
+            // Update game state - switch turns and reset energy
+            let updated_game = Game {
+                game_id: game.game_id,
+                player: game.player,
+                current_turn: false, // Switch to AI turn
+                player_energy: 2,    // Reset player energy
+                ai_energy: 2,        // Reset AI energy
+                player_score: game.player_score,
+                ai_score: game.ai_score,
+                status: game.status,
+            };
+        
+            // Write updated state
+            world.write_model(@updated_game);
+        
+            // Emit turn ended event
+            world.emit_event(
+                @TurnEnded { 
+                    player, 
+                    game_id, 
+                    next_turn: false 
+                }
+            );
+        
+            Result::Ok(())
+        }
     }
 
     #[generate_trait]
