@@ -3,7 +3,7 @@ use dojo_starter::models::{Card,Game};
 #[starknet::interface]
 trait IActions<T> {
     fn spawn(ref self: T);
-    fn create_game(ref self: T) -> u32;
+    fn create_game(ref self: T,game_id:u32) -> u32;
 }
 
 // dojo decorator
@@ -53,13 +53,9 @@ pub mod actions {
             };
             world.write_model(@new_card);
         }
-        fn create_game(ref self: ContractState) -> u32 {
+        fn create_game(ref self: ContractState,game_id:u32) -> u32 {
             let mut world = self.world_default();
-            let player = get_caller_address();
-            
-            // Generate a simple game ID (you can make this more sophisticated)
-            let game_id = world.uuid();
-    
+            let player = get_caller_address();    
             // Create new game state
             let new_game = Game {
                 game_id,
