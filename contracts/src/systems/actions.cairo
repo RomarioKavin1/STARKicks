@@ -1,4 +1,4 @@
-use dojo_starter::models::{Card,Game,PlayerDeck};
+use dojo_starter::models::{Card,Game,PlayerDeck,GameCompleted};
 // define the interface
 #[starknet::interface]
 trait IActions<T> {
@@ -12,7 +12,7 @@ trait IActions<T> {
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Card,Game,PlayerDeck};
+    use super::{IActions, Card,Game,PlayerDeck,GameCompleted};
     use starknet::{ContractAddress, get_caller_address};
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use dojo::model::{ModelStorage, ModelValueStorage};
@@ -57,6 +57,18 @@ pub mod actions {
         game_id: u32,
         next_turn: bool, // true for player, false for AI
     }
+    #[derive(Copy, Drop, Serde)]
+    #[dojo::event]
+    pub struct TurnResolved {
+        #[key]
+        player: ContractAddress,
+        game_id: u32,
+        is_attack_turn: bool,
+        player_power: u8,
+        ai_power: u8,
+        goal_scored: bool,
+        scorer: ContractAddress, // player address or zero for AI
+    }
 
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
@@ -90,6 +102,8 @@ pub mod actions {
                 player,
                 current_turn: true, // Player goes first
                 player_energy: 2,
+                is_attack_turn: true,
+                round_number: 1,
                 ai_energy: 2,
                 player_score: 0,
                 ai_score: 0,
@@ -178,26 +192,63 @@ pub mod actions {
             assert(card.in_deck, 'Card not in deck');
         
             // Verify card in player deck for this game
-            let deck :PlayerDeck = world.read_model((player, card_id));
-            let card_slot:u8 = deck.card_slot;
+            let deck: PlayerDeck = world.read_model((player, card_id));
+            let card_slot: u8 = deck.card_slot;
             assert(card_slot > 0, 'Card not in active deck');
         
+            // Calculate player power based on turn type
+            let player_power = if game.is_attack_turn {
+                if is_special { card.attack * 2 } else { card.attack }
+            } else {
+                if is_special { card.defense * 2 } else { card.defense }
+            };
+        
+            // Simulate AI play (simplified)
+            let ai_energy_used = if game.ai_energy >= 2 { 2 } else { 1 };
+            let ai_power = if game.is_attack_turn { 
+                60 * ai_energy_used // AI defending
+            } else { 
+                70 * ai_energy_used // AI attacking
+            };
+        
+            // Determine turn winner and update scores
+            let player_wins = if game.is_attack_turn {
+                player_power > ai_power
+            } else {
+                player_power >= ai_power // Defender wins ties
+            };
+        
             // Update game state
-            let updated_game = Game {
+            let mut updated_game = Game {
                 game_id: game.game_id,
                 player: game.player,
-                current_turn: game.current_turn,
+                current_turn: false, // Switch to AI turn
                 player_energy: game.player_energy - energy_cost,
-                ai_energy: game.ai_energy,
-                player_score: game.player_score,
-                ai_score: game.ai_score,
-                status: game.status,
+                ai_energy: game.ai_energy - ai_energy_used,
+                player_score: if player_wins && game.is_attack_turn { game.player_score + 1 } else { game.player_score },
+                ai_score: if !player_wins && !game.is_attack_turn { game.ai_score + 1 } else { game.ai_score },
+                status: if (game.player_score >= 3 || game.ai_score >= 3) { 2 } else { 1 },
+                is_attack_turn: game.is_attack_turn,
+                round_number: game.round_number,
             };
         
             // Write updated state
             world.write_model(@updated_game);
         
-            // Emit event
+            // Emit turn resolution event
+            world.emit_event(
+                @TurnResolved { 
+                    player,
+                    game_id,
+                    is_attack_turn: game.is_attack_turn,
+                    player_power,
+                    ai_power,
+                    goal_scored: (player_wins && game.is_attack_turn) || (!player_wins && !game.is_attack_turn),
+                    scorer: if player_wins { player } else { Zeroable::zero() }
+                }
+            );
+        
+            // Emit card played event
             world.emit_event(
                 @CardPlayed { 
                     player, 
@@ -210,6 +261,7 @@ pub mod actions {
         
             Result::Ok(())
         }
+        
         fn end_turn(ref self: ContractState, game_id: u32) -> Result<(), felt252> {
             let mut world = self.world_default();
             let player = get_caller_address();
@@ -217,18 +269,20 @@ pub mod actions {
             // Read current game state
             let mut game: Game = world.read_model((game_id, player));
             assert(game.status == 1, 'Game not in progress');
-            assert(game.current_turn, 'Not player turn');
+            assert(!game.current_turn, 'Not AI turn');
         
-            // Update game state - switch turns and reset energy
-            let updated_game = Game {
+            // Switch attack/defend and add energy
+            let mut updated_game = Game {
                 game_id: game.game_id,
                 player: game.player,
-                current_turn: false, // Switch to AI turn
-                player_energy: 2,    // Reset player energy
-                ai_energy: 2,        // Reset AI energy
+                current_turn: true, // Back to player's turn
+                player_energy: game.player_energy + 1, // Add 1 energy
+                ai_energy: game.ai_energy + 1,     // Add 1 energy for AI
                 player_score: game.player_score,
                 ai_score: game.ai_score,
                 status: game.status,
+                is_attack_turn: !game.is_attack_turn, // Switch attack/defend
+                round_number: game.round_number + 1,
             };
         
             // Write updated state
@@ -239,7 +293,7 @@ pub mod actions {
                 @TurnEnded { 
                     player, 
                     game_id, 
-                    next_turn: false 
+                    next_turn: true 
                 }
             );
         

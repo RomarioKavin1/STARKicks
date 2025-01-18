@@ -26,6 +26,8 @@ pub struct Game {
     pub player_score: u8,
     pub ai_score: u8,
     pub status: u8, // 0: not started, 1: in progress, 2: ended
+    pub is_attack_turn: bool, // true for attack, false for defend
+    pub round_number: u8, // to track energy distribution
 }
 
 #[derive(Copy, Drop, Serde)]
@@ -36,4 +38,14 @@ pub struct PlayerDeck {
     #[key]
     pub card_slot: u8, // 1 to 5 for each card slot
     pub card_id: u32,
+}
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct GameCompleted {
+    #[key]
+    player: ContractAddress,
+    game_id: u32,
+    player_goals: u8,
+    ai_goals: u8,
+    winner: ContractAddress, // player address for player win, 0 for AI win
 }
