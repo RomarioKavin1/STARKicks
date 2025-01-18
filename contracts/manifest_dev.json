@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x51702fdd7015293d5583a80b24f9c7c5408997b7ef581779511d86c3b4ae61b",
-      "class_hash": "0x765f4d9358ab1cc1ca1eb2d54f684d662a2967a1a511e9d0cad10c9323799b2",
+      "address": "0x7cf15e2ccce3690eceb760679060f5c9b462b691380a30e771ec866c99b24ca",
+      "class_hash": "0x4414e48e1f04e84b6ad6d6f6eabf9199f839230787f168ccf8978aa39ceb549",
       "abi": [
         {
           "type": "impl",
@@ -1311,6 +1311,34 @@
           "interface_name": "dojo_starter::systems::actions::IActions"
         },
         {
+          "type": "enum",
+          "name": "core::result::Result::<(), core::felt252>",
+          "variants": [
+            {
+              "name": "Ok",
+              "type": "()"
+            },
+            {
+              "name": "Err",
+              "type": "core::felt252"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "core::bool",
+          "variants": [
+            {
+              "name": "False",
+              "type": "()"
+            },
+            {
+              "name": "True",
+              "type": "()"
+            }
+          ]
+        },
+        {
           "type": "interface",
           "name": "dojo_starter::systems::actions::IActions",
           "items": [
@@ -1319,6 +1347,78 @@
               "name": "spawn",
               "inputs": [],
               "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "create_game",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u32"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::integer::u32"
+                }
+              ],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "set_deck",
+              "inputs": [
+                {
+                  "name": "card_ids",
+                  "type": "core::array::Array::<core::integer::u32>"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::result::Result::<(), core::felt252>"
+                }
+              ],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "play_card",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u32"
+                },
+                {
+                  "name": "card_id",
+                  "type": "core::integer::u32"
+                },
+                {
+                  "name": "is_special",
+                  "type": "core::bool"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::result::Result::<(), core::felt252>"
+                }
+              ],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "end_turn",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u32"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::result::Result::<(), core::felt252>"
+                }
+              ],
               "state_mutability": "external"
             }
           ]
@@ -1443,6 +1543,10 @@
       "selector": "0x7a1c71029f2d0b38e3ac89b09931d08b6e48417e079c289ff19a8698d0cba33",
       "systems": [
         "spawn",
+        "create_game",
+        "set_deck",
+        "play_card",
+        "end_turn",
         "upgrade"
       ]
     }
@@ -1453,14 +1557,62 @@
       "class_hash": "0x65a2ca4f762219770abbf10e37a04a4fab65f2d72960831f6c1fdb2bc5c9c92",
       "tag": "dojo_starter-Card",
       "selector": "0x3ef6eef265a795c547947591c73c5b81398ad9e33940e6f1f734049e0c8b9ca"
+    },
+    {
+      "members": [],
+      "class_hash": "0x3c7aa6dbafce36c7646ecabb6749012e5716946eff46b301557a324953ab7ee",
+      "tag": "dojo_starter-Game",
+      "selector": "0x19e11cf1403e104998a158f43ec6ae232dc65cf5445bcb29fb9fb5b7bb6c171"
+    },
+    {
+      "members": [],
+      "class_hash": "0x4e76f1f961401e1613be423de104452f91754167128a9afe42271eb072cec7b",
+      "tag": "dojo_starter-PlayerDeck",
+      "selector": "0x41d3ad1910e8760b84ecff5a2135d9e28156f50a1d49f267f9184506cf5eb2d"
     }
   ],
   "events": [
     {
       "members": [],
+      "class_hash": "0x5c63dd5377cde6400455450939d3e39ff307d79abc23df4c27a7756803911d5",
+      "tag": "dojo_starter-CardPlayed",
+      "selector": "0x8c53413bd3f98ff8fc5e8665803643999baed1e6d685c79e2bb1ce41f08dba"
+    },
+    {
+      "members": [],
       "class_hash": "0x6cf0a11c64090a615bc447382d232ac0716ab05d6de8a69b70bdea1acd52d03",
       "tag": "dojo_starter-CardSpawned",
       "selector": "0x637a0d05e3afae2e56e9e5734b9ef8d02a8acc033e0190207492b4b293c9e31"
+    },
+    {
+      "members": [],
+      "class_hash": "0x48a73f09202e9ec1db0bdfad3af53534cb8779bd5c6663f5de1d9f610b23c3",
+      "tag": "dojo_starter-DeckSet",
+      "selector": "0x32010ec7275730234bbbb85a3ff1a31620d0061097f5f485995051f55c7fdb6"
+    },
+    {
+      "members": [],
+      "class_hash": "0x15ab7638e1405ab109c184cdaf1ca4029de8c9ae6c02beb73bc0ad9d3ab887d",
+      "tag": "dojo_starter-GameCompleted",
+      "selector": "0x2ef99829f98bcf83b2bd06ecf956e1d19c22163d9fbec234f09742ca8676573"
+    },
+    {
+      "members": [],
+      "class_hash": "0x63963c0284ca9a835fc7b3c10101c70a1d9b409671257d7babcfc416669a5f7",
+      "tag": "dojo_starter-GameCreated",
+      "selector": "0x354a578c431bd6334ffce8b59eb31e47071c18714764ef59b9fbaa0468eae0e"
+    },
+    {
+      "members": [],
+      "class_hash": "0x2ed0432ec0936d9cfb36970e39c85b1f066264503f6368d25f200ac5ca445e1",
+      "tag": "dojo_starter-TurnEnded",
+      "selector": "0x1057df671093ef2ca7b017803ffce71455273c3e8924a48a6911d266c251e2d"
+    },
+    {
+      "members": [],
+      "class_hash": "0x716a22030af8c73b339ce720eebce7d7006443e98664d89be8552495ba91399",
+      "tag": "dojo_starter-TurnResolved",
+      "selector": "0x3f51f6ef21510e9761660c389f5a49d26c273da54d5689b54f00761d011eb61"
     }
   ]
 }

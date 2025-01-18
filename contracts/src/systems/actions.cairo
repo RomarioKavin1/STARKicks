@@ -14,8 +14,7 @@ trait IActions<T> {
 pub mod actions {
     use super::{IActions, Card,Game,PlayerDeck,GameCompleted};
     use starknet::{ContractAddress, get_caller_address};
-    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-    use dojo::model::{ModelStorage, ModelValueStorage};
+    use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
     #[derive(Copy, Drop, Serde)]
@@ -67,7 +66,7 @@ pub mod actions {
         player_power: u8,
         ai_power: u8,
         goal_scored: bool,
-        scorer: ContractAddress, // player address or zero for AI
+        scorer: u8, // player 1 or zero for AI
     }
 
     #[abi(embed_v0)]
@@ -244,7 +243,7 @@ pub mod actions {
                     player_power,
                     ai_power,
                     goal_scored: (player_wins && game.is_attack_turn) || (!player_wins && !game.is_attack_turn),
-                    scorer: if player_wins { player } else { Zeroable::zero() }
+                    scorer: if player_wins { 1 } else { 0 }
                 }
             );
         
