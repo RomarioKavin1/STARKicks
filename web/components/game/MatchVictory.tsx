@@ -16,7 +16,6 @@ export const MatchVictory = ({
   >([]);
 
   useEffect(() => {
-    // Create sparks
     const newSparks = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -25,14 +24,12 @@ export const MatchVictory = ({
     }));
     setSparks(newSparks);
 
-    // Complete after animation
     const timer = setTimeout(onComplete, 5000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <div className="match-victory">
-      {/* Victory Text */}
       <div className="text-center">
         <h1 className="victory-text mb-8">
           {winner === "player" ? "VICTORY!" : "GAME OVER"}
@@ -51,7 +48,6 @@ export const MatchVictory = ({
         </div>
       </div>
 
-      {/* Celebration Sparks */}
       <div className="winner-sparks">
         {sparks.map((spark) => (
           <div

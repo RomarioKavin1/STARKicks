@@ -1,4 +1,3 @@
-// components/battle/TeamCard.tsx
 interface Team {
   name: string;
   primaryColor: string;
@@ -25,7 +24,6 @@ export function TeamCard({ team, isSelected, onSelect }: TeamCardProps) {
         <div className="flex items-center space-x-4 mb-4">
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
             <img src={team.logo} alt={team.name} />
-            {/* <span className="text-2xl">{team.name[0]}</span> */}
           </div>
           <div>
             <h3 className="text-xl font-pixel mb-1">{team.name}</h3>

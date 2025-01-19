@@ -17,7 +17,6 @@ export function PlayerCard({
     return rarity.charAt(0).toUpperCase() + rarity.slice(1);
   };
 
-  // Rarity-based border styles
   const getBorderStyles = (rarity: string) => {
     switch (rarity) {
       case "legendary":
@@ -38,14 +37,11 @@ export function PlayerCard({
         ${isOpponent ? "opponent-card" : ""}`}
       onClick={() => onSelect(card)}
     >
-      {/* Main Card Container */}
       <div
         className={`absolute inset-0 rounded-lg ${getBorderStyles(card.rarity)} 
           bg-gray-800 overflow-hidden`}
       >
-        {/* Card Content Container */}
         <div className="relative z-10 h-full p-3 flex flex-col">
-          {/* Rarity Badge */}
           <div
             className={`absolute -top-0.5 -right-0.5 px-2 py-0.5 text-[10px] font-pixel rounded-bl-lg rounded-tr-lg ${
               card.rarity === "legendary"
@@ -60,7 +56,6 @@ export function PlayerCard({
             {getRarityDisplay(card.rarity)}
           </div>
 
-          {/* Player Image */}
           <div className="player-image-container mb-2">
             <div className="player-image bg-gray-700 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
               <span className="text-2xl font-bold text-white">
@@ -69,7 +64,6 @@ export function PlayerCard({
             </div>
           </div>
 
-          {/* Card Info */}
           <div className="text-center flex-1 flex flex-col">
             <h3 className="font-pixel text-sm text-white mb-2 truncate">
               {card.name}
@@ -90,7 +84,6 @@ export function PlayerCard({
               </div>
             </div>
 
-            {/* Special Ability - Now with proper overflow handling */}
             {card.specialAbility && !isOpponent && (
               <div className="mt-auto">
                 <div className="bg-yellow-500/10 p-1 rounded">

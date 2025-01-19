@@ -4,39 +4,7 @@ import { PreGameCountdown } from "@/components/game/Pregame";
 import { TeamCard } from "@/components/game/TeamCard";
 import { WalletButton } from "@/components/walletButton";
 import { useRouter } from "next/navigation";
-// app/battle/page.tsx
 import { SetStateAction, useState } from "react";
-
-const AI_TEAMS = [
-  {
-    id: "mancity",
-    name: "Manchester City",
-    logo: "/teams/529.png", // Add your team logos
-    difficulty: "Medium",
-    description: "Red Devils AI with attacking style",
-    primaryColor: "red-600",
-    secondaryColor: "yellow-400",
-  },
-  {
-    id: "juventus",
-    name: "Juventus",
-    logo: "/teams/496.png",
-    difficulty: "Hard",
-    description: "Old Lady AI with defensive tactics",
-    primaryColor: "gray-100",
-    secondaryColor: "gray-900",
-  },
-  {
-    id: "barca",
-    name: "Barcelona",
-    logo: "/teams/529.png",
-    difficulty: "Hard",
-    description: "Tiki-taka style AI play",
-    primaryColor: "blue-600",
-    secondaryColor: "red-600",
-  },
-];
-
 export default function BattlePage() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [showCountdown, setShowCountdown] = useState(false);
@@ -112,5 +80,3 @@ export default function BattlePage() {
     </main>
   );
 }
-
-// components/battle/PreGameCountdown.tsx

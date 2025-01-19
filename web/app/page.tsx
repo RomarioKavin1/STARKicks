@@ -15,7 +15,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen text-white flex items-center justify-center p-8 relative">
-      {/* Enhanced Background */}
       <div className="arcade-bg">
         <div className="bg-grid" />
         <div className="bg-gradient" />
@@ -35,7 +34,6 @@ export default function Home() {
             </div>
           ) : (
             <div className="game-content">
-              {/* Title Section */}
               <div className="game-header justify-center items-center flex flex-col">
                 <Logo />
                 <h1 className="game-title pixel-gradient-text mb-2">
@@ -46,12 +44,10 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Wallet Section */}
               <div className="wallet-section">
                 <ConnectWallet />
               </div>
 
-              {/* Features Section */}
               {address && (
                 <div className="features-section">
                   <ArcadeFeatureCard
@@ -91,7 +87,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* Arcade Controls */}
         <div className="arcade-controls">
           <div className="controls-left">
             <div className="joystick" />
