@@ -1,3 +1,4 @@
+// types/game.ts
 export type Rarity = "common" | "rare" | "epic" | "legendary";
 
 export type Card = {
@@ -16,6 +17,12 @@ export type Card = {
   image?: string;
 };
 
+export type VersusCards = {
+  attacker: Card;
+  defender: Card;
+  isSpecial: boolean;
+};
+
 export type GameState = {
   playerEnergy: number;
   opponentEnergy: number;
@@ -25,10 +32,24 @@ export type GameState = {
   playerCards: Card[];
   opponentCards: Card[];
   selectedCard?: Card;
+  turnTimeLeft: number;
+  isAttackingTurn: boolean;
+  showVersusAnimation: boolean;
+  versusCards: VersusCards | null;
+  gameOver: boolean;
 };
 
 export type GameAction = {
-  type: "ATTACK" | "SPECIAL" | "SWITCH_POSITION" | "END_TURN";
+  type:
+    | "ATTACK"
+    | "SPECIAL"
+    | "SWITCH_POSITION"
+    | "END_TURN"
+    | "START_OPPONENT_TURN"
+    | "RESOLVE_VERSUS"
+    | "UPDATE_TIMER"
+    | "ADD_ENERGY";
   card?: Card;
   target?: Card;
+  winner?: "player" | "opponent";
 };

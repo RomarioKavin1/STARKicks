@@ -16,7 +16,152 @@ body {
       #1a472a
     );
   }
+  .versus-container {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95));
+  }
 
+  /* Card animations */
+  @keyframes slideInLeft {
+    0% {
+      transform: translateX(-150%) rotate(-10deg);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0) rotate(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(150%) rotate(10deg);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0) rotate(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes vsText {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes statsReveal {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes winnerReveal {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes celebrate {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes spark {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(180deg);
+      opacity: 0;
+    }
+  }
+
+  .winner-sparks {
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .spark {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: theme("colors.yellow.400");
+    border-radius: 50%;
+    animation: spark 1s linear infinite;
+  }
+
+  .match-victory {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.95) 100%
+    );
+  }
+
+  .victory-text {
+    @apply text-6xl font-pixel text-yellow-400 text-center;
+    animation: celebrate 2s ease-in-out infinite;
+    text-shadow: 0 0 20px theme("colors.yellow.400");
+  }
+
+  .versus-left {
+    animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .versus-right {
+    animation: slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .versus-text {
+    @apply text-8xl font-pixel text-yellow-400;
+    animation: vsText 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    text-shadow: 0 0 30px theme("colors.yellow.400");
+  }
+
+  .stats-bar {
+    @apply h-4 rounded-full overflow-hidden;
+    transform-origin: left;
+    animation: statsReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .winner-announcement {
+    @apply text-4xl font-pixel;
+    animation: winnerReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    text-shadow: 0 0 15px currentColor;
+  }
   /* Field Markings */
   .field-markings {
     @apply pointer-events-none;
@@ -216,6 +361,54 @@ body {
 
 @layer utilities {
   /* globals.css - Add to your existing styles */
+  .loading-screen {
+    @apply fixed inset-0 z-50 flex flex-col items-center justify-center;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    animation: gradientShift 4s ease infinite;
+  }
+
+  .loading-screen::before {
+    content: "";
+    @apply absolute inset-0 pointer-events-none;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: gridMove 20s linear infinite;
+  }
+
+  .loading-text {
+    @apply font-pixel text-4xl text-yellow-400 mb-8;
+    animation: loadingPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    text-shadow: 0 0 10px rgba(234, 179, 8, 0.5),
+      0 0 20px rgba(234, 179, 8, 0.3);
+  }
+
+  .loading-spinner {
+    @apply relative w-16 h-16;
+  }
+
+  .loading-spinner::before {
+    content: "";
+    @apply absolute inset-0;
+    border: 4px solid theme("colors.gray.800");
+    border-top-color: theme("colors.yellow.500");
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .loading-progress {
+    @apply mt-8 w-64 h-4 bg-gray-800 rounded-full overflow-hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .loading-bar {
+    @apply h-full bg-yellow-500;
+    animation: progressFill 2s ease-in-out infinite;
+    box-shadow: 0 0 10px theme("colors.yellow.500");
+  }
   .card-border {
     @apply absolute inset-0 rounded-lg;
     border: 2px solid transparent;
@@ -433,7 +626,7 @@ body {
 
   /* Features Section */
   .features-section {
-    @apply grid grid-cols-3 gap-4 w-full max-w-2xl;
+    @apply grid grid-cols-4 gap-4 w-full max-w-5xl;
   }
 
   .arcade-card {

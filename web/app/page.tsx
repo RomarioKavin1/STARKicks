@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <main className="min-h-screen pixel-art-bg text-white flex items-center justify-center p-8">
       <div className="arcade-cabinet">
-        <div className="arcade-screen">
+        <div className="arcade-screen z-10">
           {isLoading ? (
             <div className="loading-screen">
               <div className="loading-text">LOADING...</div>
@@ -46,16 +46,25 @@ export default function Home() {
                     title="Collect"
                     description="Collect unique football player cards"
                     icon="🎴"
+                    route="/"
                   />
                   <ArcadeFeatureCard
                     title="Battle"
                     description="Challenge AI or other players"
                     icon="⚔️"
+                    route="/battle"
                   />
                   <ArcadeFeatureCard
                     title="Trade"
                     description="Trade cards in the marketplace"
                     icon="💱"
+                    route="/"
+                  />
+                  <ArcadeFeatureCard
+                    title="Deck"
+                    description="Set your deck"
+                    icon="🃏"
+                    route="/deck"
                   />
                 </div>
               )}

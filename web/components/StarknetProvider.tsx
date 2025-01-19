@@ -50,16 +50,16 @@ const provider = jsonRpcProvider({
 
 export function StarknetProvider({ children }: { children: React.ReactNode }) {
   return (
-    <DojoProvider>
-      <StarknetConfig
-        autoConnect
-        chains={[sepolia]}
-        provider={provider}
-        connectors={[connector]}
-        explorer={starkscan}
-      >
-        {children}
-      </StarknetConfig>
-    </DojoProvider>
+    // <DojoProvider>
+    <StarknetConfig
+      autoConnect
+      chains={[sepolia]}
+      provider={provider}
+      connectors={[connector]}
+      explorer={starkscan}
+    >
+      {children}
+    </StarknetConfig>
+    // </DojoProvider>
   );
 }
