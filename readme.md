@@ -27,6 +27,7 @@ STARKicks is a blockchain-based football card game built on StarkNet where playe
   - Cairo
   - Dojo Game Engine
   - Cartridge Wallet Integration
+  - Slot
 
 ## 🎯 Game Mechanics
 
