@@ -289,7 +289,167 @@ body {
     @apply w-full h-0;
     top: 50%;
   }
+  .pack-container {
+    @apply relative w-64 h-96 cursor-pointer transition-all duration-300;
+    perspective: 1000px;
+  }
 
+  .pack {
+    @apply relative w-full h-full rounded-2xl overflow-hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .pack-container:hover .pack {
+    transform: translateY(-10px) scale(1.02);
+  }
+
+  .pack-container:hover .pack-shine {
+    opacity: 1;
+  }
+
+  .pack-basic {
+    background: linear-gradient(135deg, #2a2d3e, #1a1c27);
+    border: 2px solid #3a3d4e;
+  }
+
+  .pack-premium {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    border: 2px solid #3b82f6;
+  }
+
+  .pack-elite {
+    background: linear-gradient(135deg, #4c1d95, #6d28d9);
+    border: 2px solid #8b5cf6;
+  }
+
+  .pack-content {
+    @apply relative p-6 flex flex-col h-full;
+  }
+
+  .pack-icon {
+    @apply mx-auto mb-4;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pack-basic .pack-icon {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  .pack-premium .pack-icon {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+
+  .pack-elite .pack-icon {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+
+  .pack-name {
+    @apply text-2xl font-pixel text-center mb-4;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .pack-description {
+    @apply text-sm text-center mb-4 opacity-80;
+  }
+
+  .pack-price {
+    @apply mt-auto text-center font-pixel;
+  }
+
+  .pack-basic .pack-price {
+    @apply text-gray-300;
+  }
+
+  .pack-premium .pack-price {
+    @apply text-blue-300;
+  }
+
+  .pack-elite .pack-price {
+    @apply text-purple-300;
+  }
+
+  .pack-shine {
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(
+      135deg,
+      transparent,
+      rgba(255, 255, 255, 0.1) 45%,
+      rgba(255, 255, 255, 0.1) 55%,
+      transparent
+    );
+  }
+
+  .pack-decoration {
+    @apply absolute inset-0 pointer-events-none;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.05) 0px,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  }
+
+  .pack-border {
+    @apply absolute inset-0 rounded-2xl pointer-events-none;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1),
+      transparent 50%,
+      rgba(255, 255, 255, 0.1)
+    );
+  }
+
+  .pack-basic .pack-border {
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .pack-premium .pack-border {
+    border: 2px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .pack-elite .pack-border {
+    border: 2px solid rgba(139, 92, 246, 0.3);
+  }
+
+  /* Card count bubbles */
+  .pack-cards {
+    @apply absolute top-4 right-4 bg-black/30 px-3 py-1 rounded-full;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Rarity indicators */
+  .rarity-bars {
+    @apply mt-4 space-y-2;
+  }
+
+  .rarity-bar {
+    @apply h-1 rounded-full bg-black/20 overflow-hidden;
+  }
+
+  .rarity-fill {
+    @apply h-full transition-all duration-300;
+  }
+
+  .pack-basic .rarity-fill {
+    @apply bg-gray-400;
+  }
+
+  .pack-premium .rarity-fill {
+    @apply bg-blue-400;
+  }
+
+  .pack-elite .rarity-fill {
+    @apply bg-purple-400;
+  }
   /* Card styles */
   .player-card {
     @apply w-32 bg-gray-800/90 rounded-lg overflow-hidden;
