@@ -31,6 +31,25 @@ const policies: SessionPolicies = {
           entrypoint: "set_deck",
           description: "Set the deck for the player",
         },
+        {
+          name: "play_card",
+          entrypoint: "play_card",
+          description: "Play a card",
+        },
+        {
+          name: "end_turn",
+          entrypoint: "end_turn",
+          description: "End the turn",
+        },
+      ],
+    },
+    "0x051Fea4450Da9D6aeE758BDEbA88B2f665bCbf549D2C61421AA724E9AC0Ced8F": {
+      methods: [
+        {
+          name: "CARTRIGE VRF",
+          entrypoint: "request_random",
+          description: "Request a verifiable random number from Cartridge",
+        },
       ],
     },
   },

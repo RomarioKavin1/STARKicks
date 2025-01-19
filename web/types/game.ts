@@ -15,6 +15,7 @@ export type Card = {
     effect: string;
   };
   image?: string;
+  team?: string;
 };
 
 export type VersusCards = {

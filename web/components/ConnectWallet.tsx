@@ -23,8 +23,8 @@ export function ConnectWallet() {
   };
 
   return (
-    <Card className="arcade-card w-full">
-      <CardContent className="p-6 space-y-4">
+    <Card className="arcade-card w-full ">
+      <CardContent className="p-6 space-y-4 ">
         {address && (
           <div className="space-y-2">
             <p className="text-sm text-gray-400 font-pixel">

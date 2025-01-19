@@ -30,7 +30,7 @@ export function WalletButton() {
           onMouseEnter={() => setIsExpanded(true)}
           onMouseLeave={() => setIsExpanded(false)}
         >
-          <button className="arcade-btn bg-gray-800 hover:bg-gray-700 font-pixel text-sm flex items-center gap-2 px-4 py-2">
+          <button className="arcade-btn hover:bg-gray-700 font-pixel text-sm flex items-center gap-2 px-4 py-2">
             <Coins className="w-4 h-4" />
             <span>{truncateAddress(address)}</span>
           </button>

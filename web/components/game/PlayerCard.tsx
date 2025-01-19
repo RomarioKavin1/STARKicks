@@ -64,7 +64,7 @@ export function PlayerCard({
           <div className="player-image-container mb-2">
             <div className="player-image bg-gray-700 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
               <span className="text-2xl font-bold text-white">
-                {card.name[0]}
+                <img src={`/teams/${card.team}.png`} alt={card.name} />
               </span>
             </div>
           </div>

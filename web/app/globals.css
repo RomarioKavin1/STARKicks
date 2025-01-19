@@ -119,6 +119,7 @@ body {
       rgba(0, 0, 0, 0.8),
       rgba(0, 0, 0, 0.95)
     );
+    border-radius: 20px;
   }
 
   .physical-pack {

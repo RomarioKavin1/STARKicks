@@ -10,7 +10,7 @@ export default function PackPage() {
       <div className="arcade-cabinet">
         <BackButton />
         <WalletButton />
-        <div className="arcade-screen">
+        <div className="arcade-screen z-40">
           <PackSelection />
         </div>
 
