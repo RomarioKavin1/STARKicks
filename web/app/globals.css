@@ -112,7 +112,142 @@ body {
     width: 100%;
     height: 100%;
   }
+  .pack-container {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 0, 0, 0.95)
+    );
+  }
 
+  .physical-pack {
+    @apply relative w-72 h-96 cursor-pointer transition-all duration-300;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .pack-front,
+  .pack-back {
+    @apply absolute inset-0 rounded-2xl;
+    backface-visibility: hidden;
+  }
+
+  .pack-front {
+    background: linear-gradient(
+      135deg,
+      var(--pack-color-1),
+      var(--pack-color-2)
+    );
+    transform: rotateY(0deg);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .pack-back {
+    background: var(--pack-color-2);
+    transform: rotateY(180deg);
+  }
+
+  .pack-basic {
+    --pack-color-1: #2a2d3e;
+    --pack-color-2: #1a1c27;
+  }
+
+  .pack-premium {
+    --pack-color-1: #1e40af;
+    --pack-color-2: #1e3a8a;
+  }
+
+  .pack-elite {
+    --pack-color-1: #6d28d9;
+    --pack-color-2: #4c1d95;
+  }
+
+  @keyframes packOpen {
+    0% {
+      transform: scale(1) rotateY(0) translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1) rotateY(90deg) translateY(-50px);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.8) rotateY(180deg) translateY(-100px);
+      opacity: 0;
+    }
+  }
+
+  .pack-opening {
+    animation: packOpen 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes cardDeal {
+    0% {
+      transform: translateY(200px) scale(0.5);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .card-deal {
+    animation: cardDeal 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .pack-logo {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+    width: 100px;
+    height: 100px;
+  }
+
+  .pack-glow {
+    @apply absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.2),
+      transparent 70%
+    );
+  }
+
+  .physical-pack:hover .pack-glow {
+    opacity: 1;
+  }
+
+  .pack-shine {
+    @apply absolute inset-0 rounded-2xl;
+    background: linear-gradient(
+      135deg,
+      transparent,
+      rgba(255, 255, 255, 0.1) 45%,
+      rgba(255, 255, 255, 0.1) 55%,
+      transparent
+    );
+    animation: shine 2s linear infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-200%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(200%) rotate(45deg);
+    }
+  }
+
+  .pack-decoration {
+    @apply absolute inset-0 rounded-2xl;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.05) 10px,
+      transparent 10px,
+      transparent 20px
+    );
+  }
   .spark {
     position: absolute;
     width: 10px;

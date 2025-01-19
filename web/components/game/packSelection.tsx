@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CreditCard, Crown, Star } from "lucide-react";
+import { PackOpening } from "./PackOpening";
 
 interface PackType {
   id: string;
@@ -65,10 +66,22 @@ const availablePacks: PackType[] = [
 export function PackSelection() {
   const [selectedPack, setSelectedPack] = useState<PackType | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
+  const [isOpeningPack, setIsOpeningPack] = useState(false);
 
   const handlePackClick = (pack: PackType) => {
     setSelectedPack(pack);
     setShowConfirm(true);
+  };
+
+  const handleOpenPack = () => {
+    setShowConfirm(false);
+    setIsOpeningPack(true);
+  };
+
+  const handlePackOpenComplete = () => {
+    setIsOpeningPack(false);
+    setSelectedPack(null);
   };
 
   const getPackIcon = (type: string) => {
@@ -202,12 +215,7 @@ export function PackSelection() {
                 >
                   CANCEL
                 </button>
-                <button
-                  className="arcade-btn"
-                  onClick={() => {
-                    // Handle purchase/open
-                  }}
-                >
+                <button className="arcade-btn" onClick={handleOpenPack}>
                   OPEN ({selectedPack.price} COINS)
                 </button>
               </div>
@@ -215,6 +223,11 @@ export function PackSelection() {
           </motion.div>
         )}
       </AnimatePresence>
+      <PackOpening
+        packType={selectedPack?.type || "basic"}
+        onComplete={handlePackOpenComplete}
+        isOpen={isOpeningPack}
+      />
     </div>
   );
 }

@@ -46,7 +46,7 @@ export default function Home() {
                     title="Collect"
                     description="Collect unique football player cards"
                     icon="🎴"
-                    route="/"
+                    route="/pack"
                   />
                   <ArcadeFeatureCard
                     title="Battle"
