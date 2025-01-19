@@ -14,7 +14,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "Guaranteed successful attack",
     },
-    rarity: "epic",
+    rarity: "legendary",
     team: "529",
   },
   {
@@ -29,7 +29,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "High chance of goal",
     },
-    rarity: "epic",
+    rarity: "legendary",
     team: "505",
   },
   {
@@ -90,7 +90,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "High damage attack",
     },
-    rarity: "legendary",
+    rarity: "epic",
     team: "50",
   },
   {
@@ -105,7 +105,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "Guaranteed attack",
     },
-    rarity: "legendary",
+    rarity: "epic",
     team: "85",
   },
   {
@@ -120,7 +120,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "Boost all stats",
     },
-    rarity: "epic",
+    rarity: "rare",
     team: "496",
   },
   {
@@ -135,7 +135,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "Extra energy next turn",
     },
-    rarity: "epic",
+    rarity: "common",
     team: "529",
   },
   {
@@ -150,7 +150,7 @@ export const mockCards: Card[] = [
       cost: 2,
       effect: "Block incoming damage",
     },
-    rarity: "epic",
+    rarity: "common",
     team: "212",
   },
 ];

@@ -36,7 +36,7 @@ export default function DeckBuilder() {
                 isSelected={false}
                 isOpponent={false}
               />
-              <div className="position-label absolute -top-2 -left-2 bg-gray-900 px-2 py-1 rounded font-pixel text-xs">
+              <div className="position-label absolute -top-2 -left-2 bg-gray-900 px-2 py-1 rounded font-pixel text-xs z-30">
                 {index === 0
                   ? "ATK 1"
                   : index === 1
