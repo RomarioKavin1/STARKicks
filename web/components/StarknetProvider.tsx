@@ -7,50 +7,59 @@ import {
 } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
 import { SessionPolicies } from "@cartridge/controller";
-const ETH_TOKEN_ADDRESS =
-  "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+import { dojoConfig } from "@/dojo/dojoConfig";
+import React from "react";
+import { DojoProvider } from "@/dojo/dojocontext";
+
+// Define session policies
 const policies: SessionPolicies = {
   contracts: {
-    [ETH_TOKEN_ADDRESS]: {
+    [dojoConfig.manifest.contracts[0].address]: {
       methods: [
         {
-          name: "approve",
-          entrypoint: "approve",
-          description: "Approve spending of tokens",
+          name: "create_game",
+          entrypoint: "create_game",
+          description: "Create a new game",
         },
-        { name: "transfer", entrypoint: "transfer" },
+        {
+          name: "spawn",
+          entrypoint: "spawn",
+          description: "Spawn a new card",
+        },
+        {
+          name: "set_deck",
+          entrypoint: "set_deck",
+          description: "Set the deck for the player",
+        },
       ],
     },
   },
 };
+
 const connector = new ControllerConnector({
   policies,
   rpc: "https://api.cartridge.gg/x/starknet/sepolia",
   colorMode: "dark",
 });
 
-// Configure RPC provider
 const provider = jsonRpcProvider({
-  rpc: (chain: Chain) => {
-    switch (chain) {
-      case mainnet:
-        return { nodeUrl: "https://api.cartridge.gg/x/starknet/mainnet" };
-      case sepolia:
-      default:
-        return { nodeUrl: "https://api.cartridge.gg/x/starknet/sepolia" };
-    }
-  },
+  rpc: () => ({
+    nodeUrl: "https://api.cartridge.gg/x/starknet/sepolia",
+  }),
 });
+
 export function StarknetProvider({ children }: { children: React.ReactNode }) {
   return (
-    <StarknetConfig
-      autoConnect
-      chains={[sepolia]}
-      provider={provider}
-      connectors={[connector]}
-      explorer={starkscan}
-    >
-      {children}
-    </StarknetConfig>
+    <DojoProvider>
+      <StarknetConfig
+        autoConnect
+        chains={[sepolia]}
+        provider={provider}
+        connectors={[connector]}
+        explorer={starkscan}
+      >
+        {children}
+      </StarknetConfig>
+    </DojoProvider>
   );
 }

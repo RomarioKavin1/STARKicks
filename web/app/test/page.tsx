@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useCallback, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { dojoConfig } from "@/dojo/dojoConfig";
 
-const WORLD_ADDRESS =
-  "0x00718cf01e9cb909a75e71057b001839a3fa300faf6127bb6e78345d9e8b872d";
+const WORLD_ADDRESS = dojoConfig.manifest.contracts[0].address;
 
 export default function TestPage() {
   const { account } = useAccount();
@@ -48,7 +48,7 @@ export default function TestPage() {
 
   const executeCreateGame = useCallback(async () => {
     if (!account) return;
-    const newGameId = Math.floor(Date.now() / 1000);
+    const newGameId = 1;
     setSubmitted(true);
     setTxHash(undefined);
     try {

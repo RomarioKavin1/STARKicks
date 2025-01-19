@@ -163,6 +163,13 @@
     get-starknet-core "^4.0.0"
     js-cookie "^3.0.5"
 
+"@dojoengine/predeployed-connector@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@dojoengine/predeployed-connector/-/predeployed-connector-1.0.10.tgz#ae4dbefafbc187bd612dd6a92a468952e9b47a18"
+  integrity sha512-Qc5/SniO3YWV58+2xbmgYFeg9tdOom+2AK5yRejk/RfvXaBQWw1TpChhfaoLNXHpBB+JwbmahoSnmdjSA93moQ==
+  dependencies:
+    "@starknet-io/types-js" "^0.7.10"
+
 "@dojoengine/recs@2.0.13":
   version "2.0.13"
   resolved "https://registry.yarnpkg.com/@dojoengine/recs/-/recs-2.0.13.tgz#57c9638b2ec0e57da8332eb477827109e22e129a"
@@ -1338,7 +1345,7 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
-"@starknet-io/types-js@^0.7.7":
+"@starknet-io/types-js@^0.7.10", "@starknet-io/types-js@^0.7.7":
   version "0.7.10"
   resolved "https://registry.yarnpkg.com/@starknet-io/types-js/-/types-js-0.7.10.tgz#d21dc973d0cd04d7b6293ce461f2f06a5873c760"
   integrity sha512-1VtCqX4AHWJlRRSYGSn+4X1mqolI1Tdq62IwzoU2vUuEE72S1OlEeGhpvd6XsdqXcfHmVzYfj8k1XtKBQqwo9w==
