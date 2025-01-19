@@ -16,7 +16,7 @@ export default function DeckBuilder() {
     <div className="deck-builder h-full p-6">
       {/* Current Deck Display */}
       <div className="current-deck-section mb-8">
-        <h2 className="font-pixel text-xl text-yellow-400 mb-4">
+        <h2 className="font-pixel text-xl text-yellow-400 mb-4 mt-16">
           CURRENT DECK
         </h2>
         <div className="deck-slots flex gap-4 justify-center">
