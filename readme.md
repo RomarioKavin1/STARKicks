@@ -3,6 +3,7 @@
 STARKicks is a blockchain-based football card game built on StarkNet where players can collect, trade, and battle with unique football player cards.
 
 ![STARKicks Preview](https://github.com/RomarioKavin1/STARKicks/blob/main/screenshots/1.png)
+![STARKicks Preview](https://github.com/RomarioKavin1/STARKicks/blob/main/screenshots/image.png)
 
 ## 🎮 Features
 
@@ -16,7 +17,6 @@ STARKicks is a blockchain-based football card game built on StarkNet where playe
 
 - **Frontend**:
 
-  - Next.js 14
   - React
   - TailwindCSS
   - Framer Motion
